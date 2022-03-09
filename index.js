@@ -3,11 +3,12 @@
 
 const express = require('express')
 const mongoose = require('mongoose')
+const user = require('./models/user')
 const app = express()
 require('dotenv').config()
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
-const Note = require('./models/note')
+const User = require('./models/user')
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -29,16 +30,16 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/notes', (request, response) => {
-  Note.find({}).then(notes => {
-    response.json(notes)
+app.get('/api/users', (request, response) => {
+  User.find({}).then(users => {
+    response.json(users)
   })
 })
 
-app.get('/api/notes/:id', (request, response, next) => {
-  Note.findById(request.params.id).then(note => {
-    if (note) {
-      response.json(note)
+app.get('/api/users/:id', (request, response, next) => {
+  User.findById(request.params.id).then(user => {
+    if (user) {
+      response.json(user)
     } else {
       response.status(404).end()
     }
@@ -46,53 +47,53 @@ app.get('/api/notes/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.put('/api/notes/:id', (request, response, next) => {
+app.put('/api/users/:id', (request, response, next) => {
   const { content, important } = request.body
 
-  const note = {
+  const user = {
     content: body.content,
     important: body.important,
   }
 
-  Note.findByIdAndUpdate(
+  User.findByIdAndUpdate(
     request.params.id,
     { content, important },
     { new: true, runValidators: true, context: 'query' }
   )
-    .then(updatedNote => {
-      response.json(updatedNote)
+    .then(updatedUser => {
+      response.json(updatedUser)
     })
     .catch(error => next(error))
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/users/:id', (request, response) => {
   const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
+  users = users.filter(user => user.id !== id)
 
   response.status(204).end()
 })
 const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
+  const maxId = users.length > 0
+    ? Math.max(...users.map(n => n.id))
     : 0
   return maxId + 1
 }
 
-app.post('/api/notes', (request, response, next) => {
+app.post('/api/users', (request, response, next) => {
   const body = request.body
 
   if (body.content === undefined) {
     return response.status(400).json({ error: 'content missing' })
   }
 
-  const note = new Note({
+  const user = new User({
     content: body.content,
     important: body.important || false,
     date: new Date(),
   })
 
-  note.save().then(savedNote => {
-    response.json(savedNote)
+  user.save().then(savedUser => {
+    response.json(savedUser)
   })
     .catch(error => next(error))
 })

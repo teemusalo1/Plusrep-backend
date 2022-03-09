@@ -1,3 +1,6 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable no-undef */
+/* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
 
 
@@ -7,26 +10,22 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2]
-const url = `mongodb+srv://teemusalo:${password}@cluster0.mvr1t.mongodb.net/noteApp?retryWrites=true&w=majority`
+const url = `mongodb+srv://teemusalo:${password}@cluster0.mvr1t.mongodb.net/Plusrep?retryWrites=true&w=majority`
 
 mongoose.connect(url)
 
-const noteSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   content: String,
   date: Date,
   important: Boolean,
 })
 
-const Note = mongoose.model('Note', noteSchema)
+const User = mongoose.model('User', userSchema)
 
-// const note = new Note({
-//   content: 'HTML is Easy',
-//   date: new Date(),
-//   important: true,
-// })
-Note.find({important: true}).then(result => {
-  result.forEach(note => {
-    console.log(note)
+
+User.find({ important: true }).then(result => {
+  result.forEach(user => {
+    console.log(user)
   })
   mongoose.connection.close()
 })
