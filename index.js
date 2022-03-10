@@ -1,14 +1,18 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
+const cors = require('cors')
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const findOrCreate = require("mongoose-findorcreate");
+
+
 const express = require('express')
 const mongoose = require('mongoose')
-const user = require('./models/user')
 const app = express()
 require('dotenv').config()
-const url = process.env.MONGODB_URI
-mongoose.connect(url)
-const User = require('./models/user')
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -18,16 +22,88 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+app.use(cors())
 app.use(express.json())
-
 app.use(requestLogger)
-
 app.use(express.static('build'))
 
+//GUUGEL
+app.use(session({
+  secret: 'Our little secret.',
+  resave: false,
+  saveUninitialized: false
+}))
 
+app.use(passport.initialize())
+app.use(passport.authenticate('session'))
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(result => {
+  console.log('connected to MongoDB @', result.connection.host)
+})
+  .catch((error) => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  name: String,
+  googleId: String,
+  secret: String
+});
+
+userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
+
+const User = new mongoose.model('User', userSchema);
+
+passport.use(User.createStrategy())
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+})
+
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  })
+})
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: 'http://localhost:3001/auth/google/callback',
+  userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
+},
+  function (accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ googleId: profile.id, username: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] })
+)
+
+app.get("/auth/google/callback",
+  passport.authenticate('google', { failureRedirect: 'http://localhost:3000' }),
+  function (req, res) {
+    // Successful authentication, redirect secrets.
+    console.log('Google auth success')
+    res.redirect('http://localhost:3001')
+  })
+
+app.get('/logout', function (req, res) {
+  console.log('logout')
+  req.logout()
+  res.redirect('http://localhost:3000/')
+})
 
 app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+  response.send('<h1>You are now logged. Hopefully</h1>')
 })
 
 app.get('/api/users', (request, response) => {
