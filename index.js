@@ -1,6 +1,8 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
+const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
 
@@ -11,6 +13,7 @@ require('dotenv').config()
 
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
+const googleAuthRouter = require('./routes/googleAuth')
 
 
 const requestLogger = (request, response, next) => {
@@ -21,17 +24,18 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+app.use(cors())
 app.use(express.json())
-
 app.use(requestLogger)
-
 app.use(express.static('build'))
 
 
+app.use('/', googleAuthRouter)
 
 app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+  response.send('<h1>You are now logged. Hopefully</h1>')
 })
+
 
 app.use('/', usersRouter)
 app.use('/', postsRouter)
@@ -42,8 +46,6 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(unknownEndpoint)
-
-
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
@@ -52,7 +54,6 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-
   next(error)
 }
 
