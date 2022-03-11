@@ -3,12 +3,15 @@
 
 const express = require('express')
 const mongoose = require('mongoose')
-const user = require('./models/user')
+
+const usersRouter = require('./routes/users')
+const postsRouter = require('./routes/posts')
 const app = express()
 require('dotenv').config()
+
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
-const User = require('./models/user')
+
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -26,77 +29,14 @@ app.use(express.static('build'))
 
 
 
+//täs oli getit
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/users', (request, response) => {
-  User.find({}).then(users => {
-    response.json(users)
-  })
-})
+app.use('/', usersRouter)
+app.use('/', postsRouter)
 
-app.get('/api/users/:id', (request, response, next) => {
-  User.findById(request.params.id).then(user => {
-    if (user) {
-      response.json(user)
-    } else {
-      response.status(404).end()
-    }
-  })
-    .catch(error => next(error))
-})
-
-app.put('/api/users/:id', (request, response, next) => {
-  const { content, important } = request.body
-
-  const user = {
-    content: body.content,
-    important: body.important,
-  }
-
-  User.findByIdAndUpdate(
-    request.params.id,
-    { content, important },
-    { new: true, runValidators: true, context: 'query' }
-  )
-    .then(updatedUser => {
-      response.json(updatedUser)
-    })
-    .catch(error => next(error))
-})
-
-app.delete('/api/users/:id', (request, response) => {
-  const id = Number(request.params.id)
-  users = users.filter(user => user.id !== id)
-
-  response.status(204).end()
-})
-const generateId = () => {
-  const maxId = users.length > 0
-    ? Math.max(...users.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
-app.post('/api/users', (request, response, next) => {
-  const body = request.body
-
-  if (body.content === undefined) {
-    return response.status(400).json({ error: 'content missing' })
-  }
-
-  const user = new User({
-    content: body.content,
-    important: body.important || false,
-    date: new Date(),
-  })
-
-  user.save().then(savedUser => {
-    response.json(savedUser)
-  })
-    .catch(error => next(error))
-})
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
