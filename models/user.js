@@ -3,7 +3,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
-
+const Schema = mongoose.Schema
+const ObjectId = Schema.ObjectId
+const post = require('../models/post')
 const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
@@ -17,6 +19,10 @@ mongoose.connect(url)
   })
 
 const userSchema = new mongoose.Schema({
+  post:[{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Post'
+  }],
   content: {
     type: String,
     minLength: 5,
@@ -24,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: false
   },
   important: Boolean
 

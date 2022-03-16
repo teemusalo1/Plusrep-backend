@@ -3,9 +3,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const ObjectId = Schema.ObjectId
 const url = process.env.MONGODB_URI
 console.log('connecting to', url)
-
+const User = require('../models/user')
 mongoose.connect(url)
   .then(result => {
     console.log('connected to MongoDB')
@@ -15,7 +17,15 @@ mongoose.connect(url)
   })
 
 const postSchema = new mongoose.Schema({
-  user: String,
+
+
+  author:{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'User',
+    require: true
+
+  },
+
   content: {
     type: String,
     minLength: 3,
@@ -23,12 +33,16 @@ const postSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: false
   },
   image: {
     type: String,
     required: false
   }
+
+
+
+
 })
 
 postSchema.set('toJSON', {

@@ -32,11 +32,12 @@ router.put('/api/users/:id', (request, response, next) => {
   const user = {
     content: body.content,
     important: body.important,
+    post: body.post
   }
 
   User.findByIdAndUpdate(
     request.params.id,
-    { content, important },
+    { content, important, author },
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedUser => {
@@ -69,6 +70,7 @@ router.post('/api/users', (request, response, next) => {
     content: body.content,
     important: body.important || false,
     date: new Date(),
+    post: [body.post]
   })
 
   user.save().then(savedUser => {

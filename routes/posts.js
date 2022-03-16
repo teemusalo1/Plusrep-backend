@@ -18,7 +18,7 @@ router.post('/api/posts', (request, response, next) => {
   }
 
   const post = new Post({
-    user: body.user,
+    author: body.user,
     content: body.content,
     date: new Date(),
     image: body.image

@@ -32,7 +32,8 @@
     "passport": "^0.5.2",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^6.1.0"
+    "passport-local-mongoose": "^6.1.0",
+    "realm": "^10.13.0"
   },
   "devDependencies": {
     "eslint": "^8.10.0",

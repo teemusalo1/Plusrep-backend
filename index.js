@@ -5,15 +5,17 @@
 const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
-
+var post = require('./models/post')
 const usersRouter = require('./routes/users')
 const postsRouter = require('./routes/posts')
+const googleAuthRouter = require('./routes/googleAuth')
+
 const app = express()
 require('dotenv').config()
 
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
-const googleAuthRouter = require('./routes/googleAuth')
+
 
 
 const requestLogger = (request, response, next) => {
@@ -30,8 +32,8 @@ app.use(requestLogger)
 app.use(express.static('build'))
 
 
-app.use('/', googleAuthRouter)
 
+app.use('/', googleAuthRouter)
 app.get('/', (request, response) => {
   response.send('<h1>You are now logged. Hopefully</h1>')
 })
@@ -40,6 +42,9 @@ app.get('/', (request, response) => {
 app.use('/', usersRouter)
 app.use('/', postsRouter)
 
+module.exports.getUserFromPost = (id, callback) => {
+  post.find({ user:id }, callback).sort( { date: 1 } ).populate({ path:'/api/posts/get_user_from_post' })
+}
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
