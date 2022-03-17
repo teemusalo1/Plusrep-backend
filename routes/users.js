@@ -7,10 +7,11 @@ const User = require('../models/user')
 const router = express.Router()
 
 
-router.get('/api/users', (request, response) => {
-  User.find({}).then(users => {
-    response.json(users)
-  })
+router.get('/api/users', async (request, response) => {
+
+  const users = await User.find({}).populate('post')
+  response.json(users)
+
 })
 
 
@@ -29,15 +30,9 @@ router.get('/api/users/:id', (request, response, next) => {
 router.put('/api/users/:id', (request, response, next) => {
   const { content, important } = request.body
 
-  const user = {
-    content: body.content,
-    important: body.important,
-    post: body.post
-  }
-
   User.findByIdAndUpdate(
     request.params.id,
-    { content, important, author },
+    { content, important },
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedUser => {

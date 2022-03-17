@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 var post = require('./models/post')
 const usersRouter = require('./routes/users')
 const postsRouter = require('./routes/posts')
+const commentsRouter = require('./routes/comments')
 const googleAuthRouter = require('./routes/googleAuth')
 
 const app = express()
@@ -41,6 +42,7 @@ app.get('/', (request, response) => {
 
 app.use('/', usersRouter)
 app.use('/', postsRouter)
+app.use('/', commentsRouter)
 
 module.exports.getUserFromPost = (id, callback) => {
   post.find({ user:id }, callback).sort( { date: 1 } ).populate({ path:'/api/posts/get_user_from_post' })

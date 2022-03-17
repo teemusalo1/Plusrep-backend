@@ -16,7 +16,7 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const postSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
 
 
   author:{
@@ -35,26 +35,25 @@ const postSchema = new mongoose.Schema({
     type: Date,
     required: false
   },
-  image: {
-    type: String,
-    required: false
+  likes:{
+    type: Number
   },
-  comments: [
-    {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Comment'
-    }
-  ]
+  post:{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Post',
+    require: true
+
+  }
 
 
 
 
 })
 
-postSchema.set('toJSON', {
+commentSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
   }
 })
 
-module.exports = mongoose.model('Post', postSchema)
+module.exports = mongoose.model('Comment', commentSchema)
