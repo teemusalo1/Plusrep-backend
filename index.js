@@ -35,10 +35,11 @@ app.use(express.static('build'))
 
 
 app.use('/', googleAuthRouter)
+/*
 app.get('/', (request, response) => {
   response.send('<h1>You are now logged. Hopefully</h1>')
 })
-
+*/
 
 app.use('/', usersRouter)
 app.use('/', postsRouter)
