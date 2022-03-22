@@ -29,7 +29,8 @@ passport.use(new GoogleStrategy({
   userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
 },
 function (accessToken, refreshToken, profile, cb) {
-  GoogleUser.findOrCreate({ googleId: profile.id, username: profile.id }, function (err, user) {
+  console.log(profile)
+  GoogleUser.findOrCreate({ googleId: profile.id, username: profile.id, name: profile.name.givenName, familyName: profile.name.familyName, image: profile.photos[0].value }, function (err, user) {
     return cb(err, user)
   })
 }
