@@ -45,7 +45,7 @@ router.get('/auth/google/callback',
   function (req, res) {
     // Successful authentication, redirect secrets.
     console.log('Google auth success')
-    res.redirect('http://localhost:3001')
+    res.redirect('https://thawing-fjord-30792.herokuapp.com/')
   })
 
 router.get('/logout', function (req, res) {
