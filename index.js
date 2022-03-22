@@ -5,6 +5,7 @@
 const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
+var bodyParser = require('body-parser')
 var post = require('./models/post')
 const usersRouter = require('./routes/users')
 const postsRouter = require('./routes/posts')
@@ -15,7 +16,9 @@ const app = express()
 require('dotenv').config()
 
 const url = process.env.MONGODB_URI
-mongoose.connect(url)
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, err => {
+  console.log('connected')
+})
 
 
 
@@ -31,8 +34,10 @@ app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
 app.use(express.static('build'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
-
+app.set('view engine', 'ejs')
 
 app.use('/', googleAuthRouter)
 app.get('/', (request, response) => {

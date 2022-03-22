@@ -35,7 +35,8 @@ const postSchema = new mongoose.Schema({
     type: Date,
     required: false
   },
-  image: {
+  Image: {
+    data: Buffer,
     type: String,
     required: false
   },
