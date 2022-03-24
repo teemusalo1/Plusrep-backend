@@ -40,10 +40,11 @@ app.use(bodyParser.json())
 app.set('view engine', 'ejs')
 
 app.use('/', googleAuthRouter)
+/*
 app.get('/', (request, response) => {
   response.send('<h1>You are now logged. Hopefully</h1>')
 })
-
+*/
 
 app.use('/', usersRouter)
 app.use('/', postsRouter)
@@ -72,6 +73,6 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)

@@ -21,6 +21,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 const userSchema = new mongoose.Schema({
   username: String,
   name: String,
+  familyName: String,
+  image: String,
   googleId: String,
   secret: String
 })

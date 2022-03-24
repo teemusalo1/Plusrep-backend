@@ -25,11 +25,12 @@ passport.deserializeUser(function (id, done) {
 passport.use(new GoogleStrategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'http://localhost:3001/auth/google/callback',
+  callbackURL: 'https://thawing-fjord-30792.herokuapp.com/auth/google/callback',
   userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
 },
 function (accessToken, refreshToken, profile, cb) {
-  GoogleUser.findOrCreate({ googleId: profile.id, username: profile.id }, function (err, user) {
+  console.log(profile)
+  GoogleUser.findOrCreate({ googleId: profile.id, username: profile.id, name: profile.name.givenName, familyName: profile.name.familyName, image: profile.photos[0].value }, function (err, user) {
     return cb(err, user)
   })
 }
@@ -44,7 +45,7 @@ router.get('/auth/google/callback',
   function (req, res) {
     // Successful authentication, redirect secrets.
     console.log('Google auth success')
-    res.redirect('http://localhost:3001')
+    res.redirect('https://thawing-fjord-30792.herokuapp.com/')
   })
 
 router.get('/logout', function (req, res) {
