@@ -1,4 +1,6 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-undef */
+
 const express = require('express')
 const Post = require('../models/post')
 const User = require('../models/user')
@@ -16,22 +18,12 @@ const getTokenFrom = (request) => {
 }
 
 router.get('/api/posts', async (request, response, next) => {
-  console.log('req', request.headers)
-
   const token = getTokenFrom(request)
-  console.log('token', token)
 
   if (token) {
     const decodedToken = jwt.verify(token, process.env.JWT_SIGNIN_KEY)
 
-    console.log('decodedtoken', decodedToken._id)
-    console.log('token', token)
-
     if (!token || !decodedToken._id) {
-      next()
-
-      console.log('decode <ERROR')
-
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 

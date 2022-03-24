@@ -3,14 +3,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
 
-
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require('google-auth-library')
 const GoogleUser = require('../models/googleUser')
 
 const clientID = process.env.CLIENT_ID
 const client = new OAuth2Client(clientID)
-
 
 const googleLogin = (req, res) => {
   const { tokenId } = req.body
@@ -25,8 +23,8 @@ const googleLogin = (req, res) => {
       if (email_verified) {
         GoogleUser.findOne({ email }).exec((err, user) => {
           console.log('USER', user)
+
           if (err) {
-            console.log('VERIFIED ERR')
             return res.status(400).json({
               error: 'Something went wrog',
             })
@@ -53,8 +51,6 @@ const googleLogin = (req, res) => {
 
               newGoogleUser.save((err, data) => {
                 if (err) {
-                  console.log('VERIFIED ERR')
-
                   return res.status(400).json({
                     error: 'Something went wrong',
                   })
