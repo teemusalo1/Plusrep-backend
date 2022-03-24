@@ -36,7 +36,7 @@ const googleLogin = (req, res) => {
               const token = jwt.sign(
                 { _id: user.id },
                 process.env.JWT_SIGNIN_KEY,
-                { expiresIn: '7d' }
+                { expiresIn: '3d' }
               )
               const { _id, name, email, picture } = user
 
@@ -62,7 +62,7 @@ const googleLogin = (req, res) => {
                 const token = jwt.sign(
                   { _id: data.id },
                   process.env.JWT_SIGNIN_KEY,
-                  { expiresIn: '7d' }
+                  { expiresIn: '3d' }
                 )
                 const { _id, name, email, picture } = newGoogleUser
 
