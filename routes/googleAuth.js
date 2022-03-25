@@ -1,57 +1,13 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
+
 const express = require('express')
-const app = express()
 
-const GoogleUser = require('../models/googleUser')
 const router = express.Router()
-const passport = require('passport')
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const googleLogin = require('../controllers/googleLogin')
 
-app.use(passport.initialize())
-app.use(passport.authenticate('session'))
-
-passport.use(GoogleUser.createStrategy())
-passport.serializeUser(function (user, done) {
-  done(null, user.id)
-})
-passport.deserializeUser(function (id, done) {
-  GoogleUser.findById(id, function (err, user) {
-    done(err, user)
-  })
-})
-
-passport.use(new GoogleStrategy({
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'https://thawing-fjord-30792.herokuapp.com/auth/google/callback',
-  userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
-},
-function (accessToken, refreshToken, profile, cb) {
-  console.log(profile)
-  GoogleUser.findOrCreate({ googleId: profile.id, username: profile.id, name: profile.name.givenName, familyName: profile.name.familyName, image: profile.photos[0].value }, function (err, user) {
-    return cb(err, user)
-  })
-}
-))
-
-router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] })
-)
-
-router.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: 'http://localhost:3000' }),
-  function (req, res) {
-    // Successful authentication, redirect secrets.
-    console.log('Google auth success')
-    res.redirect('https://thawing-fjord-30792.herokuapp.com/')
-  })
-
-router.get('/logout', function (req, res) {
-  console.log('logout')
-  req.logout()
-  res.redirect('http://localhost:3000/')
-})
+router.post('/api/googlelogin', googleLogin)
 
 module.exports = router

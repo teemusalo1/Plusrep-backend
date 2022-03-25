@@ -1,9 +1,13 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
+/* eslint-disable no-undef */
+
 const express = require('express')
 const Post = require('../models/post')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 const multer = require('multer')
 var fs = require('fs')
@@ -20,11 +24,35 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
-router.get('/api/posts', async (request, response) => {
-  await Post.find({}).populate('author').populate('comments').then(posts => {
-    response.json(posts)
-    response.render
-  })
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('authorization')
+  console.log('gettokenfrom req', authorization)
+
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
+router.get('/api/posts', async (request, response, next) => {
+  const token = getTokenFrom(request)
+
+  if (token) {
+    const decodedToken = jwt.verify(token, process.env.JWT_SIGNIN_KEY)
+
+    if (!token || !decodedToken._id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    await Post.find({})
+      .populate('author')
+      .populate('comments')
+      .then((posts) => {
+        response.json(posts)
+      })
+      .catch((error) => next(error))
+  }
 })
 
 router.post('/api/posts', async (request, response) => {
@@ -46,8 +74,6 @@ router.post('/api/posts', async (request, response) => {
   user.post = user.post.concat(savedPost)
   await user.save()
   response.json(savedPost.toJSON)
-
-
 })
 
 module.exports = router

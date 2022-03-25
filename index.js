@@ -20,8 +20,6 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, err =
   console.log('connected')
 })
 
-
-
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -37,28 +35,22 @@ app.use(express.static('build'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.set('view engine', 'ejs')
-
 app.use('/', googleAuthRouter)
-/*
-app.get('/', (request, response) => {
-  response.send('<h1>You are now logged. Hopefully</h1>')
-})
-*/
-
 app.use('/', usersRouter)
 app.use('/', postsRouter)
 app.use('/', commentsRouter)
 
 module.exports.getUserFromPost = (id, callback) => {
-  post.find({ user:id }, callback).sort( { date: 1 } ).populate({ path:'/api/posts/get_user_from_post' })
+  post
+    .find({ user: id }, callback)
+    .sort({ date: 1 })
+    .populate({ path: '/api/posts/get_user_from_post' })
 }
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-app.use(unknownEndpoint)
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
@@ -66,11 +58,17 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: 'invalid token' })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'token expired',
+    })
   }
   next(error)
 }
 
-
+app.use(unknownEndpoint)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001

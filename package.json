@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "build:ui": "del build && cd ../Plusrep/ && npm run build && copy build ../Plusrep-backend",
     "deploy": "git push heroku master",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",    
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail"
   },
   "repository": {
@@ -31,7 +31,8 @@
     "express": "^4.17.3",
     "express-handlebars": "^6.0.3",
     "express-session": "^1.17.2",
-    "google-auth-library": "^7.14.0",
+    "google-auth-library": "^7.14.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.5",
     "mongoose-findorcreate": "^3.0.0",
     "morgan": "^1.10.0",
