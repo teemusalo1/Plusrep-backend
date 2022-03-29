@@ -4,7 +4,7 @@
 /* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI2
 
 console.log('connecting to', url)
 

@@ -15,7 +15,7 @@ const googleAuthRouter = require('./routes/googleAuth')
 const app = express()
 require('dotenv').config()
 
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI2
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, err => {
   console.log('connected')
 })

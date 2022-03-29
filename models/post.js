@@ -5,7 +5,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI2
 console.log('connecting to', url)
 const User = require('../models/user')
 mongoose.connect(url)
