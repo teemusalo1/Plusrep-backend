@@ -11,9 +11,9 @@ const googleUser = require('../models/user')
 const tags = require('../models/tags')
 const clientID = process.env.CLIENT_ID
 const client = new OAuth2Client(clientID)
-let id = ''
-const createTag = ( async (id) => {
-  await googleLogin
+let newGoogleUser = ''
+const createTag = ( async () => {
+  const id = await newGoogleUser._id
   let tagsuser = await googleUser.findById(id)
   const newTags = tags({
     uiDesigner: true,
@@ -59,13 +59,13 @@ const googleLogin = async (req, res) => {
                 user: { _id, name, email, picture },
               })
             } else {
-              let newGoogleUser = new googleUser({
+              newGoogleUser = new googleUser({
                 name,
                 email,
                 picture,
               })
 
-              newGoogleUser.save((err, data) => {
+              newGoogleUser.save( async(err, data) => {
                 if (err) {
                   return res.status(400).json({
                     error: 'Something went wrong',
@@ -77,16 +77,16 @@ const googleLogin = async (req, res) => {
                   { expiresIn: '3d' }
                 )
                 const { _id, name, email, picture } = newGoogleUser
-                id = _id
+
                 // res.json({
                 //   token,
                 //   user: { _id, name, email, picture },
                 //   id
                 // })
-                createTag(_id)
+                await createTag()
               })
 
-             
+              
             }
           }
         })
