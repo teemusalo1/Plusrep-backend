@@ -16,36 +16,20 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-  email: {
-    type: String,
-    trim: true,
-    required: true,
-    unique: true,
-    lowercase: true,
-  },
-  picture: String,
-
-  tags: [{
+const tagSchema = new mongoose.Schema({
+  uiDesigner: true,
+  developper: true,
+  salesman: true,
+  user:[{
     type: mongoose.SchemaTypes.ObjectId,
-    ref: 'Tags'
+    ref: 'User'
   }],
+} )
 
-  post:[{
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: 'Post'
-  }],
-}, { timestamps: true , } )
-
-userSchema.set('toJSON', {
+tagSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
   }
 })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('Tags', tagSchema)

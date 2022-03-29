@@ -5,7 +5,8 @@
 
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require('google-auth-library')
-const GoogleUser = require('../models/googleUser')
+const GoogleUser = require('../models/user')
+const googleUser = require('../models/googleUser')
 
 const clientID = process.env.CLIENT_ID
 const client = new OAuth2Client(clientID)
@@ -61,7 +62,6 @@ const googleLogin = (req, res) => {
                   { expiresIn: '3d' }
                 )
                 const { _id, name, email, picture } = newGoogleUser
-
                 res.json({
                   token,
                   user: { _id, name, email, picture },
