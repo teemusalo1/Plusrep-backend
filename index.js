@@ -5,6 +5,7 @@
 const cors = require('cors')
 const express = require('express')
 const mongoose = require('mongoose')
+var bodyParser = require('body-parser')
 var post = require('./models/post')
 const usersRouter = require('./routes/users')
 const postsRouter = require('./routes/posts')
@@ -14,8 +15,10 @@ const googleAuthRouter = require('./routes/googleAuth')
 const app = express()
 require('dotenv').config()
 
-const url = process.env.MONGODB_URI
-mongoose.connect(url)
+const url = process.env.MONGODB_URI2
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, err => {
+  console.log('connected')
+})
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -29,6 +32,8 @@ app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
 app.use(express.static('build'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.use('/', googleAuthRouter)
 app.use('/', usersRouter)

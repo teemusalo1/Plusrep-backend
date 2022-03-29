@@ -5,7 +5,8 @@
 
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require('google-auth-library')
-const GoogleUser = require('../models/googleUser')
+const googleUser = require('../models/user')
+
 
 const clientID = process.env.CLIENT_ID
 const client = new OAuth2Client(clientID)
@@ -21,7 +22,7 @@ const googleLogin = (req, res) => {
       const { email_verified, name, email, picture } = response.payload
       console.log(response.payload)
       if (email_verified) {
-        GoogleUser.findOne({ email }).exec((err, user) => {
+        googleUser.findOne({ email }).exec((err, user) => {
           console.log('USER', user)
 
           if (err) {
@@ -43,7 +44,7 @@ const googleLogin = (req, res) => {
                 user: { _id, name, email, picture },
               })
             } else {
-              let newGoogleUser = new GoogleUser({
+              let newGoogleUser = new googleUser({
                 name,
                 email,
                 picture,
@@ -61,7 +62,6 @@ const googleLogin = (req, res) => {
                   { expiresIn: '3d' }
                 )
                 const { _id, name, email, picture } = newGoogleUser
-
                 res.json({
                   token,
                   user: { _id, name, email, picture },

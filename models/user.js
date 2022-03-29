@@ -4,9 +4,7 @@
 /* eslint-disable linebreak-style */
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const ObjectId = Schema.ObjectId
-const post = require('../models/post')
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI2
 
 console.log('connecting to', url)
 
@@ -19,27 +17,34 @@ mongoose.connect(url)
   })
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  email: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: true,
+    lowercase: true,
+  },
+  picture: String,
+
+  tags: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Tags'
+  }],
+
   post:[{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'Post'
   }],
-  content: {
-    type: String,
-    minLength: 5,
-    required: true
-  },
-  date: {
-    type: Date,
-    required: false
-  },
-  important: Boolean
-
-})
+}, { timestamps: true , } )
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
-   
   }
 })
 
