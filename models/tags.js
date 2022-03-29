@@ -17,9 +17,9 @@ mongoose.connect(url)
   })
 
 const tagSchema = new mongoose.Schema({
-  uiDesigner: true,
-  developper: true,
-  salesman: true,
+  uiDesigner: Boolean,
+  developper: Boolean,
+  salesman: Boolean,
   user:[{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User'

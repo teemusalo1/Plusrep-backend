@@ -1,8 +1,9 @@
 {
     "env": {
         "PORT" : "3001",
-        "MONGODB_URI" : "mongodb+srv://teemusalo:salasana@cluster0.mvr1t.mongodb.net/plusRep?retryWrites=true&w=majority",
+        "MONGODB_URI2": "mongodb+srv://miska:perunamuusi@cluster0.p4bvv.mongodb.net/luetteloApp?retryWrites=true&w=majority",
         "CLIENT_ID": "674340090612-qkluit3qj5vngsedm6l0rk12lk6g41bp.apps.googleusercontent.com",
-        "CLIENT_SECRET": "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"
+        "CLIENT_SECRET": "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",
+        "JWT_SIGNIN_KEY" : "nakkivene"
     }
 }
