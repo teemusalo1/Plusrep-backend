@@ -23,7 +23,6 @@ const createTag = ( async () => {
   const savedTags = await newTags.save()
   tagsuser.tags = tagsuser.tags.concat(savedTags)
   await tagsuser.save()
-  
 })
 const googleLogin = async (req, res) => {
   const { tokenId } = req.body
@@ -86,7 +85,6 @@ const googleLogin = async (req, res) => {
                 await createTag()
               })
 
-              
             }
           }
         })

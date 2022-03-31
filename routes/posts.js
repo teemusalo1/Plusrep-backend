@@ -10,15 +10,24 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const multer = require('multer')
+const { GridFsStorage } = require('multer-gridfs-storage')
 var fs = require('fs')
 var path = require('path')
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads')
+const storage = new GridFsStorage({
+  url: process.env.MONGODB_URI2,
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
+  file: (req, file) => {
+    const match = ['image/png', 'image/jpeg']
+
+    if (match.indexOf(file.mimetype) === -1) {
+      const filename = `${Date.now()}-any-name-${file.originalname}`
+      return filename
+    }
+
+    return {
+      filename: `${Date.now()}-any-name-${file.originalname}`,
+    }
   },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
 })
 
 var upload = multer({ storage: storage })
@@ -65,7 +74,7 @@ router.post('/api/posts', async (request, response) => {
     author: user._id,
     content: body.content,
     date: new Date(),
-    image: { data: fs.readFileSync(path.join(_dirname + '/uploads/' + request.file.filename)),
+    image: { data: upload.single('image'),
       contentType: 'image/png' }
   })
 
