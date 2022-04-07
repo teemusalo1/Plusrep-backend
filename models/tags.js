@@ -17,13 +17,14 @@ mongoose.connect(url)
   })
 
 const tagSchema = new mongoose.Schema({
-  uiDesigner: Boolean,
-  developper: Boolean,
-  salesman: Boolean,
-  user:[{
+  UI: Boolean,
+  Development: Boolean,
+  Sales: Boolean,
+  General: Boolean,
+  user:{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User'
-  }],
+  }
 } )
 
 tagSchema.set('toJSON', {

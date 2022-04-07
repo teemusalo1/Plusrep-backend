@@ -8,22 +8,11 @@ const express = require('express')
 const router = express.Router()
 const { OAuth2Client } = require('google-auth-library')
 const googleUser = require('../models/user')
-const tags = require('../models/tags')
+const Tags = require('../models/tags')
 const clientID = process.env.CLIENT_ID
 const client = new OAuth2Client(clientID)
 let newGoogleUser = ''
-const createTag = async () => {
-  const id = await newGoogleUser._id
-  let tagsuser = await googleUser.findById(id)
-  const newTags = tags({
-    uiDesigner: true,
-    developper: true,
-    salesman: true,
-  })
-  const savedTags = await newTags.save()
-  tagsuser.tags = tagsuser.tags.concat(savedTags)
-  await tagsuser.save()
-}
+
 const googleLogin = async (req, res) => {
   const { tokenId } = req.body
   client
@@ -36,57 +25,77 @@ const googleLogin = async (req, res) => {
       console.log(response.payload)
 
       if (email_verified) {
-        googleUser.findOne({ email }).populate('tags').exec((err, user) => {
-          console.log('USER', user)
+        googleUser
+          .findOne({ email })
+          .populate('tags')
+          .exec((err, user) => {
+            console.log('USER', user)
 
-          if (err) {
-            return res.status(400).json({
-              error: 'Something went wrog',
-            })
-          } else {
-            if (user) {
-              console.log('env', process.env.JWT_SIGNIN_KEY)
-              const token = jwt.sign(
-                { _id: user.id },
-                process.env.JWT_SIGNIN_KEY,
-                { expiresIn: '3d' }
-              )
-              const { _id, name, email, picture, tags } = user
-
-              res.json({
-                token,
-                user: { _id, name, email, picture, tags },
+            if (err) {
+              return res.status(400).json({
+                error: 'Something went wrog',
               })
             } else {
-              newGoogleUser = new googleUser({
-                name,
-                email,
-                picture,
-                tags,
-              })
-
-              newGoogleUser.save(async (err, data) => {
-                if (err) {
-                  return res.status(400).json({
-                    error: 'Something went wrong',
-                  })
-                }
+              if (user) {
+                console.log('env', process.env.JWT_SIGNIN_KEY)
                 const token = jwt.sign(
-                  { _id: data.id },
+                  { _id: user.id },
                   process.env.JWT_SIGNIN_KEY,
                   { expiresIn: '3d' }
                 )
-                const { _id, name, email, picture, tags } = newGoogleUser
+                const { _id, name, email, picture, tags } = user
 
                 res.json({
                   token,
-                  user: { _id, name, email, picture, tags }
+                  user: { _id, name, email, picture, tags },
                 })
-                await createTag()
-              })
+              } else {
+                newGoogleUser = new googleUser({
+                  name,
+                  email,
+                  picture,
+                  tags,
+                })
+
+                newGoogleUser.save(async (err, data) => {
+                  if (err) {
+                    return res.status(400).json({
+                      error: 'Something went wrong',
+                    })
+                  }
+                  const token = jwt.sign(
+                    { _id: data.id },
+                    process.env.JWT_SIGNIN_KEY,
+                    { expiresIn: '3d' }
+                  )
+                  const defaultTags = new Tags({
+                    UI: true,
+                    Development: true,
+                    Sales: true,
+                    General: true,
+                    user: data.id,
+                  })
+
+                  defaultTags.save()
+                  newGoogleUser.tags.push(defaultTags)
+                  newGoogleUser.save()
+                  googleUser
+                    .findOne({ email: newGoogleUser.email })
+                    .populate('tags')
+                    .exec(function (err, user) {
+                      if (err) return handleError(err)
+                      console.log('MY COOL USER', user)
+                    })
+
+                  const { _id, name, email, picture, tags } = newGoogleUser
+                  res.json({
+                    token,
+                    user: { _id, name, email, picture, tags },
+                  })
+                })
+              }
             }
-          }
-        })
+          })
       }
     })
 }
