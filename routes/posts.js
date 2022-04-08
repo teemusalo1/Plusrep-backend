@@ -32,7 +32,6 @@ const storage = new GridFsStorage({
 
 var upload = multer({ storage: storage })
 
-
 const getTokenFrom = (request) => {
   const authorization = request.get('authorization')
   console.log('gettokenfrom req', authorization)
@@ -63,6 +62,30 @@ router.get('/api/posts', async (request, response, next) => {
   }
 })
 
+router.get('/api/posts/:id', async (request, response, next) => {
+  const token = getTokenFrom(request)
+
+  if (token) {
+    const decodedToken = jwt.verify(token, process.env.JWT_SIGNIN_KEY)
+
+    if (!token || !decodedToken._id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    await Post.findById(request.params.id)
+      .populate('author')
+      .populate('comments')
+      .then((post) => {
+        if (post) {
+          response.json(post)
+        } else {
+          response.status(404).end()
+        }
+      })
+      .catch((error) => next(error))
+  }
+})
+
 router.post('/api/posts', async (request, response) => {
   const body = request.body
   const user = await User.findById(body.author)
@@ -74,8 +97,7 @@ router.post('/api/posts', async (request, response) => {
     author: user._id,
     content: body.content,
     date: new Date(),
-    image: { data: upload.single('image'),
-      contentType: 'image/png' }
+    image: { data: upload.single('image'), contentType: 'image/png' },
   })
 
   const savedPost = await post.save()
