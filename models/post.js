@@ -38,9 +38,11 @@ const postSchema = new mongoose.Schema({
     {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Comment'
-    }
-  ]
-
+    }],
+  tags: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Tags'
+  }],
 
 
 
