@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 var bodyParser = require('body-parser')
 var post = require('./models/post')
 const usersRouter = require('./routes/users')
+const tagsRouter = require('./routes/tags')
 const postsRouter = require('./routes/posts')
 const commentsRouter = require('./routes/comments')
 const googleAuthRouter = require('./routes/googleAuth')
@@ -58,6 +59,8 @@ app.use('/', googleAuthRouter)
 app.use('/', usersRouter)
 app.use('/', postsRouter)
 app.use('/', commentsRouter)
+app.use('/', tagsRouter)
+
 
 app.get('/file/:filename', async (req, res) => {
 

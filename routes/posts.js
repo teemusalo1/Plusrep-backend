@@ -42,7 +42,31 @@ router.get('/api/posts', async (request, response, next) => {
   }
 })
 
-router.post('/api/posts',upload.single('file'), async (request, response) => {
+router.get('/api/posts/:id', async (request, response, next) => {
+  const token = getTokenFrom(request)
+
+  if (token) {
+    const decodedToken = jwt.verify(token, process.env.JWT_SIGNIN_KEY)
+
+    if (!token || !decodedToken._id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    await Post.findById(request.params.id)
+      .populate('author')
+      .populate('comments')
+      .then((post) => {
+        if (post) {
+          response.json(post)
+        } else {
+          response.status(404).end()
+        }
+      })
+      .catch((error) => next(error))
+  }
+})
+
+router.post('/api/posts', async (request, response) => {
   const body = request.body
   const user = await User.findById(body.author)
   if (body.content === undefined) {
