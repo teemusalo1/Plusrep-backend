@@ -24,6 +24,10 @@ const tagSchema = new mongoose.Schema({
   user:{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User'
+  },
+  post:{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Post'
   }
 } )
 

@@ -66,7 +66,7 @@ router.get('/api/posts/:id', async (request, response, next) => {
   }
 })
 
-router.post('/api/posts', async (request, response) => {
+router.post('/api/posts',upload.single('file'), async (request, response) => {
   const body = request.body
   const user = await User.findById(body.author)
   if (body.content === undefined) {
