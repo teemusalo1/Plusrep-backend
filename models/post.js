@@ -17,8 +17,6 @@ mongoose.connect(url)
   })
 
 const postSchema = new mongoose.Schema({
-
-
   author:{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User',
@@ -35,11 +33,7 @@ const postSchema = new mongoose.Schema({
     type: Date,
     required: false
   },
-  Image: {
-    data: Buffer,
-    type: String,
-    required: false
-  },
+  image: { type: String || '' },
   comments: [
     {
       type: mongoose.SchemaTypes.ObjectId,

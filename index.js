@@ -12,9 +12,13 @@ const tagsRouter = require('./routes/tags')
 const postsRouter = require('./routes/posts')
 const commentsRouter = require('./routes/comments')
 const googleAuthRouter = require('./routes/googleAuth')
-
+const upload = require('./routes/upload')
+const Grid = require('gridfs-stream')
 const app = express()
 require('dotenv').config()
+const connection = require('./db')
+
+
 
 const url = process.env.MONGODB_URI2
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, err => {
@@ -29,6 +33,20 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+let gfs, gridfsBucket
+connection()
+const conn = mongoose.connection
+conn.once('open', function () {
+  gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: 'photos'
+  })
+  gfs = Grid(conn.db, mongoose.mongo)
+  console.log('toimiiko tää')
+  gfs.collection('photos')
+})
+
+
+
 app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
@@ -36,12 +54,26 @@ app.use(express.static('build'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+app.use('/file', upload)
 app.use('/', googleAuthRouter)
 app.use('/', usersRouter)
 app.use('/', postsRouter)
 app.use('/', commentsRouter)
 app.use('/', tagsRouter)
 
+
+app.get('/file/:filename', async (req, res) => {
+
+  const file = await gfs.files.findOne({ filename: req.params.filename })
+  console.log(file)
+  const readStream = gridfsBucket.openDownloadStream(file._id)
+  console.log('pääseekö')
+  console.log(readStream)
+  readStream.pipe(res)
+  console.log(readStream.pipe(res))
+
+}
+)
 
 module.exports.getUserFromPost = (id, callback) => {
   post
