@@ -29,6 +29,11 @@ const postSchema = new mongoose.Schema({
     minLength: 3,
     required: true
   },
+  title: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
   date: {
     type: Date,
     required: false
