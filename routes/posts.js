@@ -3,7 +3,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-undef */
-
 const express = require('express')
 const Post = require('../models/post')
 const Tags = require('../models/tags')
@@ -81,10 +80,10 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
     console.log(error)
   }
   const tags = new Tags({
-    UI: body.UI,
-    Development: body.Development,
-    Sales: body.Sales,
-    General: body.General
+    UI: body.tags.UI,
+    Development: body.tags.Development,
+    Sales: body.tags.Sales,
+    General: body.tags.General
   })
   const post = new Post({
     author: user._id,
@@ -100,6 +99,26 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   await user.save()
   await response.json(savedPost.toJSON)
 
+})
+
+router.put('/api/posts/:id', (request, response, next) => {
+  console.log(request.body)
+
+  Post
+    .findByIdAndUpdate(
+      request.params.id,
+      {
+        content: request.body.content,
+        title: request.body.title,
+      },
+
+      { new: true, runValidators: true, context: 'query' }
+    )
+    .then((update) => {
+      response.json(update)
+     console.log(response)
+    })
+    .catch((error) => next(error))
 })
 
 
