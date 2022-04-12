@@ -75,7 +75,7 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   }
   let imgUrl = ''
   try {
-    imgUrl = `http://localhost:3001/file/${request.file.filename}`
+    imgUrl = `https://thawing-fjord-30792.herokuapp.com/file/${request.file.filename}`
   } catch (error) {
     console.log(error)
   }
