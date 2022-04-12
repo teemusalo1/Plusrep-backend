@@ -6,6 +6,7 @@
 
 const express = require('express')
 const Post = require('../models/post')
+const Tags = require('../models/tags')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const upload = require('../middleware/upload')
@@ -79,6 +80,12 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   } catch (error) {
     console.log(error)
   }
+  const tags = new Tags({
+    UI: body.UI,
+    Development: body.Development,
+    Sales: body.Sales,
+    General: body.General
+  })
   const post = new Post({
     author: user._id,
     content: body.content,
@@ -86,11 +93,12 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
     date: new Date(),
     image: imgUrl
   })
-
+  const savedTags = await tags.save()
+  post.tags = post.tags.concat(savedTags)
   const savedPost = await post.save()
   user.post = user.post.concat(savedPost)
   await user.save()
-  response.json(savedPost.toJSON)
+  await response.json(savedPost.toJSON)
 
 })
 
