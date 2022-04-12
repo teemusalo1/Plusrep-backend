@@ -3,6 +3,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-undef */
+
 const express = require('express')
 const Post = require('../models/post')
 const Tags = require('../models/tags')
@@ -75,7 +76,7 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   }
   let imgUrl = ''
   try {
-    imgUrl = `https://thawing-fjord-30792.herokuapp.com/file/${request.file.filename}`
+    imgUrl = `http://localhost:3001/file/${request.file.filename}`
   } catch (error) {
     console.log(error)
   }
@@ -99,26 +100,6 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   await user.save()
   await response.json(savedPost.toJSON)
 
-})
-
-router.put('/api/posts/:id', (request, response, next) => {
-  console.log(request.body)
-
-  Post
-    .findByIdAndUpdate(
-      request.params.id,
-      {
-        content: request.body.content,
-        title: request.body.title,
-      },
-
-      { new: true, runValidators: true, context: 'query' }
-    )
-    .then((update) => {
-      response.json(update)
-     console.log(response)
-    })
-    .catch((error) => next(error))
 })
 
 
