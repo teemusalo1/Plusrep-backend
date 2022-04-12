@@ -55,6 +55,7 @@ router.get('/api/posts/:id', async (request, response, next) => {
     await Post.findById(request.params.id)
       .populate('author')
       .populate('comments')
+      .populate('tags')
       .then((post) => {
         if (post) {
           response.json(post)
@@ -81,6 +82,7 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   const post = new Post({
     author: user._id,
     content: body.content,
+    title: body.title,
     date: new Date(),
     image: imgUrl
   })
