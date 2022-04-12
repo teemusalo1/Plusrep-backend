@@ -80,10 +80,10 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
     console.log(error)
   }
   const tags = new Tags({
-    UI: body.tags.UI,
-    Development: body.tags.Development,
-    Sales: body.tags.Sales,
-    General: body.tags.General
+    UI: body.UI,
+    Development: body.Development,
+    Sales: body.Sales,
+    General: body.General
   })
   const post = new Post({
     author: user._id,
