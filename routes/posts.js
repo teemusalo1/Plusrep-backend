@@ -99,6 +99,7 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   user.post = user.post.concat(savedPost)
   await user.save()
   await response.json(savedPost.toJSON)
+  
 
 })
 
