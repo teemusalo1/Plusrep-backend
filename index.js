@@ -38,7 +38,7 @@ connection()
 const conn = mongoose.connection
 conn.once('open', function () {
   gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: 'photos'
+    bucketName: 'photos',
   })
   gfs = Grid(conn.db, mongoose.mongo)
   console.log('toimiiko tää')
@@ -63,7 +63,7 @@ app.use('/', tagsRouter)
 
 
 app.get('/file/:filename', async (req, res) => {
-
+ 
   const file = await gfs.files.findOne({ filename: req.params.filename })
   console.log(file)
   const readStream = gridfsBucket.openDownloadStream(file._id)

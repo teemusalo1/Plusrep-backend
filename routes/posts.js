@@ -85,22 +85,24 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
     Sales: body.Sales,
     General: body.General
   })
+  const savedTags = await tags.save()
   const post = new Post({
     author: user._id,
     content: body.content,
     title: body.title,
     date: new Date(),
-    image: imgUrl
+    image: imgUrl,
+    tags:  savedTags
   })
-  const savedTags = await tags.save()
-  post.tags = post.tags.concat(savedTags)
+
+  response.json(imgUrl)
   const savedPost = await post.save()
   user.post = user.post.concat(savedPost)
   await user.save()
   await response.json(savedPost.toJSON)
-  
-
 })
+
+
 
 router.put('/api/posts/:id', (request, response, next) => {
   console.log(request.body)
@@ -117,7 +119,7 @@ router.put('/api/posts/:id', (request, response, next) => {
     )
     .then((update) => {
       response.json(update)
-     console.log(response)
+      console.log(response)
     })
     .catch((error) => next(error))
 })
