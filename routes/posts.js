@@ -31,11 +31,11 @@ router.get('/api/posts', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-
     await Post.find({})
       .populate('author')
       .populate('comments')
       .populate('image')
+      .populate('tags')
       .then((posts) => {
         response.json(posts)
       })
@@ -68,7 +68,7 @@ router.get('/api/posts/:id', async (request, response, next) => {
   }
 })
 
-router.post('/api/posts',upload.single('file'), async (request, response) => {
+router.post('/api/posts', upload.single('file'), async (request, response) => {
   const body = request.body
   const user = await User.findById(body.author)
   if (body.content === undefined) {
@@ -84,14 +84,14 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
     UI: body.UI,
     Development: body.Development,
     Sales: body.Sales,
-    General: body.General
+    General: body.General,
   })
   const post = new Post({
     author: user._id,
     content: body.content,
     title: body.title,
     date: new Date(),
-    image: imgUrl
+    image: imgUrl,
   })
   const savedTags = await tags.save()
   post.tags = post.tags.concat(savedTags)
@@ -99,10 +99,6 @@ router.post('/api/posts',upload.single('file'), async (request, response) => {
   user.post = user.post.concat(savedPost)
   await user.save()
   await response.json(savedPost.toJSON)
-  
-
 })
-
-
 
 module.exports = router
