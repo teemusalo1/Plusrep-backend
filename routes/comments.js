@@ -1,3 +1,4 @@
+/* eslint-disable no-cond-assign */
 /* eslint-disable linebreak-style */
 const express = require('express')
 const Comment = require('../models/comment')
@@ -39,22 +40,50 @@ router.post('/api/comments', async (request, response) => {
 router.put('/api/comments/:id', async (request, response, next) => {
   console.log(request.body)
   const comment = await Comment.findById(request.params.id)
-  Comment
-    .findByIdAndUpdate(
-      request.params.id,
-      {
+  console.log(comment.userLikes.some(x => x.userLikes === request.params.user))
+  const isLiked = comment.userLikes.some(x => x.userLikes === request.params.user)
+  switch(isLiked){
+  case false:
+    Comment
+      .findByIdAndUpdate(
+        request.params.id,
+        {
+          userLikes: request.body.user,
+          likes: comment.likes + request.body.likes,
+        },
 
-        likes: comment.likes + request.body.likes,
-      },
+        { new: true, runValidators: true, context: 'query' }
+      )
+      .then((update) => {
 
-      { new: true, runValidators: true, context: 'query' }
-    )
-    .then((update) => {
+        response.json(update)
+        console.log(response)
+      })
+      .catch((error) => next(error))
+    break
+  case true:
 
-      response.json(update)
-      console.log(response)
-    })
-    .catch((error) => next(error))
-})
+    Comment
+      .findByIdAndUpdate(
+        request.params.id,
+        {
+          userLikes: comment.userLikes.filter(x => x === request.params.user),
+          likes: comment.likes + -request.body.likes,
+        },
+
+        { new: true, runValidators: true, context: 'query' }
+      )
+      .then((update) => {
+        console.log(comment.userLikes)
+        console.log(comment.userLikes.some(x => x.userLikes === request.params.user))
+        response.json(update)
+        console.log('new ObjectId("' + request.body.user + '")')
+      })
+      .catch((error) => next(error))
+    break
+
+  }})
+
+
 
 module.exports = router

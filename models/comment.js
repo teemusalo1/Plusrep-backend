@@ -43,7 +43,11 @@ const commentSchema = new mongoose.Schema({
     ref: 'Post',
     require: true
 
-  }
+  },
+  userLikes:[{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'User',
+  }],
 
 
 
