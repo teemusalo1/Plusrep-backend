@@ -36,4 +36,25 @@ router.post('/api/comments', async (request, response) => {
 
 })
 
+router.put('/api/comments/:id', async (request, response, next) => {
+  console.log(request.body)
+  const comment = await Comment.findById(request.params.id)
+  Comment
+    .findByIdAndUpdate(
+      request.params.id,
+      {
+
+        likes: comment.likes + request.body.likes,
+      },
+
+      { new: true, runValidators: true, context: 'query' }
+    )
+    .then((update) => {
+
+      response.json(update)
+      console.log(response)
+    })
+    .catch((error) => next(error))
+})
+
 module.exports = router
