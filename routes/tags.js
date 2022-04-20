@@ -1,5 +1,5 @@
-/* eslint-disable no-undef */
 /* eslint-disable linebreak-style */
+/* eslint-disable no-undef */
 const express = require('express')
 const tags = require('../models/tags')
 const router = express.Router()
