@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-cond-assign */
 /* eslint-disable linebreak-style */
 const express = require('express')
@@ -40,15 +41,21 @@ router.post('/api/comments', async (request, response) => {
 router.put('/api/comments/:id', async (request, response, next) => {
   console.log(request.body)
   const comment = await Comment.findById(request.params.id)
-  console.log(comment.userLikes.some(x => x.userLikes === request.params.user))
-  const isLiked = comment.userLikes.some(x => x.userLikes === request.params.user)
+
+  console.log(request.body.user)
+  console.log('params',request.params)
+  const index = comment.userLikes.indexOf(request.body.user, 0)
+  console.log(index)
+  console.log('userlikes', comment.userLikes)
+  const isLiked = comment.userLikes.some(element => element.toString() === request.body.user)
+  console.log('dawddadadda' , isLiked)
   switch(isLiked){
   case false:
     Comment
       .findByIdAndUpdate(
         request.params.id,
         {
-          userLikes: request.body.user,
+          userLikes: [...comment.userLikes, request.body.user],
           likes: comment.likes + request.body.likes,
         },
 
@@ -57,17 +64,18 @@ router.put('/api/comments/:id', async (request, response, next) => {
       .then((update) => {
 
         response.json(update)
-        console.log(response)
+
       })
       .catch((error) => next(error))
     break
   case true:
-
+    const likedUsers = comment.userLikes.filter(element => element.toString() !== request.body.user)
+    console.log('filtteröity lista',likedUsers)
     Comment
       .findByIdAndUpdate(
         request.params.id,
         {
-          userLikes: comment.userLikes.filter(x => x === request.params.user),
+          userLikes: likedUsers,
           likes: comment.likes + -request.body.likes,
         },
 
@@ -77,7 +85,7 @@ router.put('/api/comments/:id', async (request, response, next) => {
         console.log(comment.userLikes)
         console.log(comment.userLikes.some(x => x.userLikes === request.params.user))
         response.json(update)
-        console.log('new ObjectId("' + request.body.user + '")')
+
       })
       .catch((error) => next(error))
     break
