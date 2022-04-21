@@ -12,6 +12,7 @@ const tagsRouter = require('./routes/tags')
 const postsRouter = require('./routes/posts')
 const commentsRouter = require('./routes/comments')
 const googleAuthRouter = require('./routes/googleAuth')
+const statsRoute = require('./routes/stats')
 const upload = require('./routes/upload')
 const Grid = require('gridfs-stream')
 const app = express()
@@ -60,7 +61,7 @@ app.use('/', usersRouter)
 app.use('/', postsRouter)
 app.use('/', commentsRouter)
 app.use('/', tagsRouter)
-
+app.use('/', statsRoute)
 
 app.get('/file/:filename', async (req, res) => {
  
