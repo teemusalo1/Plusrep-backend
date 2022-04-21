@@ -9,19 +9,54 @@ const Post = require('../models/post')
 
 
 
-router.get('/api/stats', async (request, response) => {
+router.get('/api/stats/users', async (request, response) => {
+  var userCount
+  try{
+    await User.find({}).then(users => {
+      console.log('Users:', users.length)
+      userCount = users.length
+    })
 
-  await User.find({}).then(users => {
-    response.status('Users: ', users.length)
-  })
-  await Post.find({}).then(posts => {
-    response.status('Posts: ', posts.length)
-  })
-  await Comment.find({}).then(comments => {
-    response.status('Comments: ', comments.length)
-  })
+  }catch(e){
+    console.log(e)
+  }
+  response.send('Users: ' +  userCount)
 
 })
+
+
+router.get('/api/stats/posts', async (request, response) => {
+
+  var postCount
+
+  try{
+    await Post.find({}).then(posts => {
+      console.log('Posts:', posts.length)
+      postCount = posts.length
+    })
+  }catch(e){
+    console.log(e)
+  }
+  response.send('Posts: ' + postCount)
+})
+
+
+router.get('/api/stats/comments', async (request, response) => {
+  var commentCount
+  try{
+
+    await Comment.find({}).then(comments => {
+      console.log('Comments:', comments.length)
+      commentCount = comments.length
+    })
+  }catch(e){
+    console.log(e)
+  }
+
+  response.send('Comments: ' + commentCount)
+
+})
+
 
 
 
