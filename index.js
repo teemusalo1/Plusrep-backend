@@ -55,16 +55,17 @@ app.use(express.static('build'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+app.use('/', statsRoute)
 app.use('/file', upload)
 app.use('/', googleAuthRouter)
 app.use('/', usersRouter)
 app.use('/', postsRouter)
 app.use('/', commentsRouter)
 app.use('/', tagsRouter)
-app.use('/', statsRoute)
+
 
 app.get('/file/:filename', async (req, res) => {
- 
+
   const file = await gfs.files.findOne({ filename: req.params.filename })
   console.log(file)
   const readStream = gridfsBucket.openDownloadStream(file._id)
