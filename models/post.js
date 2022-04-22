@@ -30,7 +30,7 @@ const postSchema = new mongoose.Schema({
     required: true
   },
   solved:{
-    type: Boolean || false,
+    type: Boolean,
 
   },
   title: {

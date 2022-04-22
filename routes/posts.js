@@ -131,7 +131,24 @@ router.put('/api/posts/:id', upload.single('file'), (request, response, next) =>
     })
     .catch((error) => next(error))
 })
+router.put('/api/solved/:id', (request, response, next) => {
+  console.log(request.body)
 
+  Post
+    .findByIdAndUpdate(
+      request.params.id,
+      {
+        solved: request.body.solved,
+      },
+
+      { new: true, runValidators: true, context: 'query' }
+    )
+    .then((update) => {
+      response.json(update)
+      console.log(response)
+    })
+    .catch((error) => next(error))
+})
 router.delete('/api/posts/:id', (request, response, next) => {
   Post.findByIdAndRemove(request.params.id)
     .then(() => {
