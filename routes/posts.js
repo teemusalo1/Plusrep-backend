@@ -93,7 +93,7 @@ router.post('/api/posts', upload.single('file'), async (request, response) => {
     title: body.title,
     date: new Date(),
     image: imgUrl,
-    tags:  savedTags
+    tags: savedTags,
   })
 
   response.json(imgUrl)
@@ -127,6 +127,14 @@ router.put('/api/posts/:id', upload.single('file'), (request, response, next) =>
     .then((update) => {
       response.json(update)
       console.log(response)
+    })
+    .catch((error) => next(error))
+})
+
+router.delete('/api/posts/:id', (request, response, next) => {
+  Post.findByIdAndRemove(request.params.id)
+    .then(() => {
+      response.status(204).end()
     })
     .catch((error) => next(error))
 })

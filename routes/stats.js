@@ -20,7 +20,7 @@ router.get('/api/stats/users', async (request, response) => {
   }catch(e){
     console.log(e)
   }
-  response.send('Users: ' +  userCount)
+  response.send('' +  userCount)
 
 })
 
@@ -35,7 +35,7 @@ router.get('/api/stats/posts', async (request, response) => {
   }catch(e){
     console.log(e)
   }
-  response.send('Posts: ' + postCount)
+  response.send('' + postCount)
 })
 
 
@@ -50,7 +50,12 @@ router.get('/api/stats/comments', async (request, response) => {
   }catch(e){
     console.log(e)
   }
+<<<<<<< HEAD
   response.send('Comments: ' + commentCount)
+=======
+
+  response.send('' + commentCount)
+>>>>>>> 5a262db185d4381681ce318118fdf0fb1be2a617
 
 })
 
