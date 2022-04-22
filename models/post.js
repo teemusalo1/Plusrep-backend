@@ -29,6 +29,10 @@ const postSchema = new mongoose.Schema({
     minLength: 3,
     required: true
   },
+  solved:{
+    type: Boolean || false,
+
+  },
   title: {
     type: String,
     minLength: 3,
