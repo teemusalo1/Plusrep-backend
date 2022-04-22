@@ -103,18 +103,27 @@ router.post('/api/posts', upload.single('file'), async (request, response) => {
   await response.json(savedPost.toJSON)
 })
 
-router.put('/api/posts/:id', (request, response, next) => {
+
+
+router.put('/api/posts/:id', upload.single('file'), (request, response, next) => {
   console.log(request.body)
+  let imgUrl = ''
+  try {
+    imgUrl = `http://localhost:3001/file/${request.file.filename}`
+  } catch (error) {
+    console.log(error)
+  }
+  Post
+    .findByIdAndUpdate(
+      request.params.id,
+      {
+        content: request.body.content,
+        title: request.body.title,
+        image: imgUrl
+      },
 
-  Post.findByIdAndUpdate(
-    request.params.id,
-    {
-      content: request.body.content,
-      title: request.body.title,
-    },
-
-    { new: true, runValidators: true, context: 'query' }
-  )
+      { new: true, runValidators: true, context: 'query' }
+    )
     .then((update) => {
       response.json(update)
       console.log(response)

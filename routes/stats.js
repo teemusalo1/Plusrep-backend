@@ -26,9 +26,7 @@ router.get('/api/stats/users', async (request, response) => {
 
 
 router.get('/api/stats/posts', async (request, response) => {
-
   var postCount
-
   try{
     await Post.find({}).then(posts => {
       console.log('Posts:', posts.length)
@@ -52,8 +50,12 @@ router.get('/api/stats/comments', async (request, response) => {
   }catch(e){
     console.log(e)
   }
+<<<<<<< HEAD
+  response.send('Comments: ' + commentCount)
+=======
 
   response.send('' + commentCount)
+>>>>>>> 5a262db185d4381681ce318118fdf0fb1be2a617
 
 })
 
