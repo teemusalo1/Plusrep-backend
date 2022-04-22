@@ -50,6 +50,10 @@ router.get('/api/stats/comments', async (request, response) => {
   }catch(e){
     console.log(e)
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bac851076c4114b39e885aaad1ed989616e0fb60
   response.send('' + commentCount)
 
 })
