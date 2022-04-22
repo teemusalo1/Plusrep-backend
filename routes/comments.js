@@ -56,7 +56,7 @@ router.put('/api/comments/:id', async (request, response, next) => {
         request.params.id,
         {
           userLikes: [...comment.userLikes, request.body.user],
-          likes: comment.likes + request.body.likes,
+          likes: comment.likes + 1,
         },
 
         { new: true, runValidators: true, context: 'query' }
@@ -76,7 +76,7 @@ router.put('/api/comments/:id', async (request, response, next) => {
         request.params.id,
         {
           userLikes: likedUsers,
-          likes: comment.likes + -request.body.likes,
+          likes: comment.likes + -1,
         },
 
         { new: true, runValidators: true, context: 'query' }
