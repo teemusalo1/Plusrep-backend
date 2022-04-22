@@ -92,6 +92,7 @@ router.post('/api/posts', upload.single('file'), async (request, response) => {
     content: body.content,
     title: body.title,
     date: new Date(),
+    solved: false,
     image: imgUrl,
     tags: savedTags,
   })
