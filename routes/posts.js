@@ -115,7 +115,7 @@ router.put('/api/posts/:id', (request, response, next) => {
       {
         content: request.body.content,
         title: request.body.title,
-        image: imgUrl
+
       },
 
       { new: true, runValidators: true, context: 'query' }
