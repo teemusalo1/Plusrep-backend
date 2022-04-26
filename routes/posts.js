@@ -107,7 +107,6 @@ router.post('/api/posts', upload.single('file'), async (request, response) => {
 
 
 router.put('/api/posts/:id', (request, response, next) => {
-  console.log(request.body)
 
   Post
     .findByIdAndUpdate(
@@ -122,12 +121,10 @@ router.put('/api/posts/:id', (request, response, next) => {
     )
     .then((update) => {
       response.json(update)
-      console.log(response)
     })
     .catch((error) => next(error))
 })
 router.put('/api/solved/:id', (request, response, next) => {
-  console.log(request.body)
 
   Post
     .findByIdAndUpdate(
@@ -140,7 +137,6 @@ router.put('/api/solved/:id', (request, response, next) => {
     )
     .then((update) => {
       response.json(update)
-      console.log(response)
     })
     .catch((error) => next(error))
 })

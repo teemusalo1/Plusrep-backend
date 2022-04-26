@@ -51,7 +51,6 @@ router.get('/api/stats/comments', async (request, response) => {
     console.log(e)
   }
   response.send('' + commentCount)
-
 })
 
 
