@@ -106,14 +106,9 @@ router.post('/api/posts', upload.single('file'), async (request, response) => {
 
 
 
-router.put('/api/posts/:id', upload.single('file'), (request, response, next) => {
+router.put('/api/posts/:id', (request, response, next) => {
   console.log(request.body)
-  let imgUrl = ''
-  try {
-    imgUrl = `http://localhost:3001/file/${request.file.filename}`
-  } catch (error) {
-    console.log(error)
-  }
+
   Post
     .findByIdAndUpdate(
       request.params.id,
